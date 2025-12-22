@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ASICS 部活ノート Demo (Logo Ver.)</title>
+    <style>
+        /* === 全体のスタイル設定 === */
+        body {
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+        }
+
+        /* スマホ画面のコンテナ */
+        .phone-container {
+            width: 375px;
+            height: 667px;
+            background-color: #ffffff;
+            border-radius: 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+            position: relative;
+            border: 8px solid #333;
+            color: #333;
+        }
+
+        /* ヘッダー */
+        .header {
+            padding: 15px 20px;
+            text-align: center;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #fff;
+            height: 50px;
+        }
+        
+        /* ★★★ ロゴ画像のスタイル（復活） ★★★ */
+        .asics-logo-img {
+            height: 35px; /* ロゴの高さ */
+            width: auto;
+        }
+
+        /* コンテンツエリア */
+        .content {
+            padding: 20px;
+            overflow-y: auto;
+            height: calc(100% - 80px);
+        }
+        .date-display {
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 25px;
+            color: #001e62;
+            font-family: 'Arial Black', sans-serif;
+            letter-spacing: -1px;
+        }
+
+        /* 入力フォーム */
+        .input-group {
+            margin-bottom: 30px;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        .label-flex {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-weight: bold;
+            color: #001e62;
+        }
+        .slider-val {
+            color: #ef426f;
+            font-weight: bold;
+        }
+        input[type=range] {
+            width: 100%;
+            accent-color: #001e62;
+            cursor: pointer;
+        }
+
+        /* ボタン */
+        .btn-main {
+            width: 100%;
+            padding: 16px;
+            background: #001e62;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.1s;
+            box-shadow: 0 4px 15px rgba(0, 30, 98, 0.3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+        .btn-main:active {
+            transform: scale(0.98);
+        }
+
+        /* === 結果画面 === */
+        #resultScreen {
+            display: none;
+            height: 100%;
+            background-color: #fff;
+        }
+        .analysis-box {
+            background: #eef4ff;
+            padding: 20px;
+            border-radius: 16px;
+            margin-bottom: 25px;
+            border-left: 5px solid #0057b8;
+        }
+        .analysis-title {
+            font-size: 14px;
+            font-weight: bold;
+            color: #0057b8;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+        .shoe-card {
+            background: #fff;
+            color: #333;
+            border-radius: 20px;
+            overflow: hidden;
+            text-align: center;
+            padding-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 1px solid #eee;
+        }
+        .shoe-img-container {
+            width: 100%;
+            height: 220px;
+            background: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+        /* 画像表示用 */
+        .shoe-img-container div {
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .shoe-info {
+            padding: 20px;
+            text-align: left;
+        }
+        .shoe-name {
+            font-size: 22px;
+            font-weight: 800;
+            margin-bottom: 5px;
+            color: #001e62;
+            line-height: 1.2;
+        }
+        .shoe-tag {
+            display: inline-block;
+            background: #000;
+            color: #fff;
+            font-size: 10px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+        .recommend-reason {
+            font-size: 14px;
+            color: #555;
+            line-height: 1.6;
+        }
+
+        /* アニメーション */
+        .fade-in { animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+<div class="phone-container">
+    <div id="inputScreen" class="fade-in" style="height:100%;">
+        <div class="header">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+            
+            <img src="https://upload.wikimedia.org/wikipedia/commons/b/b1/Asics_Logo.svg" alt="ASICS Logo" class="asics-logo-img">
+            
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+        </div>
+        
+        <div class="content">
+            <div class="date-display">OCT 25</div>
+            <p style="color:#666; margin-top:-20px; margin-bottom:30px; font-size:14px;">Today's Training Log</p>
+
+            <div class="input-group">
+                <div class="label-flex">
+                    <span>🔥 練習強度</span>
+                    <span class="slider-val" id="intensityVal">3 (Normal)</span>
+                </div>
+                <input type="range" id="intensityRange" min="1" max="5" value="3" step="1">
+            </div>
+
+            <div class="input-group">
+                <div class="label-flex">
+                    <span>⚡ 疲労コンディション</span>
+                    <span class="slider-val" id="fatigueVal">3 (Little Tired)</span>
+                </div>
+                <input type="range" id="fatigueRange" min="1" max="5" value="3" step="1">
+            </div>
+
+            <div style="margin-top: 30px;">
+                <button class="btn-main" onclick="showResult()">
+                    <span>記録・AI分析を開始</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="resultScreen" class="fade-in">
+        <div class="header">
+            <div onclick="backToInput()" style="cursor:pointer; display:flex; align-items:center; color:#001e62; font-weight:bold;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                BACK
+            </div>
+            <span style="font-weight:bold; color:#001e62;">ANALYSIS</span>
+            <div style="width:20px;"></div>
+        </div>
+
+        <div class="content">
+            <div class="analysis-box">
+                <div class="analysis-title">ASICS AI COACH ADVICE</div>
+                <p id="analysisText" style="margin:0; line-height:1.5; font-size:15px; color:#333;">分析中...</p>
+            </div>
+
+            <h4 style="margin-bottom: 15px; color:#333;">RECOMMENDED GEAR</h4>
+            
+            <div class="shoe-card">
+                <div class="shoe-img-container">
+                    <div id="shoeImage"></div>
+                </div>
+                <div class="shoe-info">
+                    <span class="shoe-tag" id="shoeTag">CUSHIONING</span>
+                    <div class="shoe-name" id="shoeName">SHOES NAME</div>
+                    <div class="recommend-reason" id="shoeReason">
+                        ここに理由が表示されます。
+                    </div>
+                    <button class="btn-main" style="margin-top: 20px; font-size: 14px; background:#000;">
+                        商品詳細 / 試着予約
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // === JavaScript ロジック部分 ===
+
+    // DOM要素の取得
+    const intensityRange = document.getElementById('intensityRange');
+    const intensityVal = document.getElementById('intensityVal');
+    const fatigueRange = document.getElementById('fatigueRange');
+    const fatigueVal = document.getElementById('fatigueVal');
+
+    // テキスト変換
+    function getIntensityText(val) {
+        const texts = ["", "1 (リカバリー)", "2 (軽め)", "3 (通常練習)", "4 (ハード)", "5 (追い込み)"];
+        return texts[val] || val;
+    }
+    function getFatigueText(val) {
+        const texts = ["", "1 (絶好調)", "2 (良い)", "3 (少し重い)", "4 (疲れ気味)", "5 (限界に近い)"];
+        return texts[val] || val;
+    }
+
+    // スライダー操作時のイベントリスナー
+    if(intensityRange && intensityVal) {
+        intensityRange.oninput = function() { intensityVal.innerText = getIntensityText(this.value); }
+    }
+    if(fatigueRange && fatigueVal) {
+        fatigueRange.oninput = function() { fatigueVal.innerText = getFatigueText(this.value); }
+    }
+
+    // === 画面遷移と提案ロジック ===
+    function showResult() {
+        try {
+            let intensity = parseInt(intensityRange.value);
+            let fatigue = parseInt(fatigueRange.value);
+            let totalScore = intensity + fatigue;
+
+            let analysisText = document.getElementById('analysisText');
+            let shoeName = document.getElementById('shoeName');
+            let shoeReason = document.getElementById('shoeReason');
+            let shoeImage = document.getElementById('shoeImage');
+            let shoeTag = document.getElementById('shoeTag');
+
+            // === 判定ロジック ===
+            if (totalScore >= 7) {
+                // パターンA: 疲労蓄積 (NOVABLAST)
+                analysisText.innerHTML = "<b>⚠️ 疲労レベルが高まっています。</b><br>直近のトレーニング負荷が高く、足への衝撃が蓄積しています。怪我予防のため、次回はクッション性の高いシューズでのリカバリーランを推奨します。";
+                shoeName.innerText = "NOVABLAST 4";
+                shoeTag.innerText = "MAX CUSHIONING";
+                shoeTag.style.background = "#ef426f"; 
+                shoeReason.innerText = "トランポリンのような反発性と、着地の衝撃を吸収する厚底ソールが、疲れた足を守りながら軽快な走りをサポートします。";
+                
+                // プレイスホルダー画像 (安全なダミー画像)
+                shoeImage.style.backgroundImage = "url('https://placehold.co/600x400/ef426f/ffffff?text=NOVABLAST+4+(Cushion)')";
+
+            } else {
+                // パターンB: 調子良好 (MAGIC SPEED)
+                analysisText.innerHTML = "<b>✅ コンディションは良好です。</b><br>疲労も抜けており、質の高いトレーニングが可能です。次のポイント練習では、レースペースを意識したスピードトレーニングを行いましょう。";
+                shoeName.innerText = "MAGIC SPEED 3";
+                shoeTag.innerText = "SPEED / CARBON";
+                shoeTag.style.background = "#001e62"; 
+                shoeReason.innerText = "カーボンプレートを搭載し、蹴り出しの推進力を強化。あなたの好調なコンディションを、自己ベスト更新の走りに変える一足です。";
+                
+                // プレイスホルダー画像
+                shoeImage.style.backgroundImage = "url('https://placehold.co/600x400/001e62/ffffff?text=MAGIC+SPEED+3+(Speed)')";
+            }
+
+            // 画面切り替え
+            document.getElementById('inputScreen').style.display = 'none';
+            document.getElementById('resultScreen').style.display = 'block';
+            window.scrollTo(0, 0);
+
+        } catch (e) {
+            console.error("エラーが発生しました:", e);
+            alert("エラーが発生しました。");
+        }
+    }
+
+    function backToInput() {
+        document.getElementById('resultScreen').style.display = 'none';
+        document.getElementById('inputScreen').style.display = 'block';
+    }
+</script>
+
+</body>
+</html>
